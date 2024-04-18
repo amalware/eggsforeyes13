@@ -1,17 +1,52 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+package com.myname.week_13;
+
+class CheckingAccount
+{
+    public int balance;
+
+    public CheckingAccount(int initialBalance)
+    {
+        balance = initialBalance;
+    }
+
+    public int withdraw(int amount)
+    {
+        if (amount <= balance)
+        {
+            try {
+                Thread.sleep((int) (Math.random() * 200));
+            }
+            catch (InterruptedException ie) {
+            }
+
+            balance -= amount;
+        }
+        return balance;
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        CheckingAccount account = new CheckingAccount(100);
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                String name = Thread.currentThread().getName();
+                for (int i = 0; i < 10; i++) {
+                    System.out.println(name + " tries to withdraw $10, balance: " +
+                            account.withdraw(10));
+                }
+            }
+        };
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        Thread thdHusband = new Thread(r);
+        thdHusband.setName("Husband");
+
+        Thread thdWife = new Thread(r);
+        thdWife.setName("Wife");
+        
+        thdHusband.start();
+        thdWife.start();
     }
 }
